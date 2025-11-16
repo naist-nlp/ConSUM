@@ -1,0 +1,11 @@
+libs/*
+wandb
+debug*
+__pycache__
+.cache
+.vscode
+finetune/checkpoint-*
+finetune/log
+.python-version
+test*
+t5-*

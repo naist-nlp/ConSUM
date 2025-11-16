@@ -1,0 +1,31 @@
+[project]
+name = "sum-fabr"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets",
+    "rouge-score",
+    "transformers",
+    "FENICE",
+    "FIZZ",
+    "mbrs",
+    "menli",
+    "moverscore",
+    "SimCLS",
+    "UniEval",
+    "pytest",
+    "gdown>=5.2.0",
+    "en-core-web-sm",
+    "pip",
+]
+
+[tool.uv.sources]
+en-core-web-lg = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.7.1/en_core_web_lg-3.7.1-py3-none-any.whl" }
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl" }
+moverscore = { git = "https://github.com/KennyNg-19/emnlp19-moverscore.git", rev = "51bbb5bdc5771f03313d01b93d66019e74068aaa" }
+menli = { path = "./libs/menli" }
+FIZZ = { path = "./libs/FIZZ" }
+SimCLS = { path = "./libs/SimCLS" }
+UniEval = { path = "./libs/UniEval" }
