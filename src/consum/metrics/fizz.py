@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from fizz.batch_fizz_score import FizzScorer
 from mbrs.metrics.base import MetricReferenceless, register
 from tqdm import tqdm
 import torch
 import numpy as np
+
+from ..modules import FizzScorer
 
 @register("fizz")
 class MetricFIZZ(MetricReferenceless):

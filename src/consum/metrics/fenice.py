@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from metric.FENICE import FENICE
 from mbrs.metrics.base import MetricReferenceless, register
 from tqdm import tqdm
 import torch
 import numpy as np
+
+from ..modules import FENICE
 
 @register("fenice")
 class MetricFENICE(MetricReferenceless):

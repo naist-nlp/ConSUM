@@ -2,10 +2,10 @@ import pytest
 import torch
 
 from .unieval import MetricUniEval
-from UniEval.metric.evaluator import get_evaluator
-from UniEval.utils import convert_to_json
 
 from ..utils.summ_test_set import HYPOTHESES, REFERENCES, SOURCES, UNIEVAL_SCORES
+from ..modules.unieval.utils import convert_to_json
+from ..modules import UniEvalScorer
 
 class TestMetricUniEval:
     @pytest.fixture(scope="class")
@@ -14,7 +14,7 @@ class TestMetricUniEval:
 
     @pytest.fixture(scope="class")
     def unieval_scorer(self):
-        return get_evaluator(**MetricUniEval.Config().__dict__)
+        return UniEvalScorer(**MetricUniEval.Config().__dict__)
     
     def test_score(self, metric_unieval: MetricUniEval):
         metric_scores = []

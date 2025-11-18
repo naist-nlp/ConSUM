@@ -3,10 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 from torch import Tensor
-from UniEval.metric.evaluator import get_evaluator
-from UniEval.utils import convert_to_json
 
 from mbrs.metrics.base import Metric, register
+
+from ..modules import UniEvalScorer
+from ..modules.unieval.utils import convert_to_json
 
 @register("unieval")
 class MetricUniEval(Metric):
@@ -27,7 +28,7 @@ class MetricUniEval(Metric):
 
     def __init__(self, cfg: MetricUniEval.Config):
         super().__init__(cfg)
-        self.scorer = get_evaluator(
+        self.scorer = UniEvalScorer(
             task=cfg.task,
             max_length=cfg.max_length,
             device=cfg.device,

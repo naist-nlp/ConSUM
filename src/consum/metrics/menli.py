@@ -3,8 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 from torch import Tensor
-from menli.MENLI import MENLI
 from mbrs.metrics.base import Metric, register
+
+from ..modules import MENLI
 
 @register("menli")
 class MetricMENLI(Metric):

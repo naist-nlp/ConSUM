@@ -1,5 +1,5 @@
 SIMCLS_DATA_PATH = "src/consum/utils/simcls_test_data.json"
-SIMCLS_MODEL_PATH = "src/consum/utils/simcls_test_model/scorer.bin"
+SIMCLS_MODEL_PATH = "naist-nlp/simcls-diverse_beam-cnn_dm-bart"
 
 HYPOTHESES = [
     "Woman gives her kidney away in big \"super swap\" Charity is the idea that strangers can be given kidneys back to someone else. Blood samples of donors and recipients are processed to reveal match, hospital says. Chain of surgeries to be wrapped up Friday. In March, hospital will hold banquet to thank donors, recipients and support personnel.",

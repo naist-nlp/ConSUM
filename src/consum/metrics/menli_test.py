@@ -2,9 +2,9 @@ import pytest
 import torch
 
 from .menli import MetricMENLI
-from menli.MENLI import MENLI
 
 from ..utils.summ_test_set import HYPOTHESES, REFERENCES, MENLI_SCORES
+from ..modules import MENLI
 
 class TestMetricMENLI:
     @pytest.fixture(scope="class")

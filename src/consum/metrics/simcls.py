@@ -10,10 +10,12 @@ from transformers import RobertaTokenizer
 from mbrs.metrics.base import MetricReferenceless, register
 from tqdm import tqdm
 import torch
-from SimCLS.model import ReRanker
-from SimCLS.data_utils import ReRankingDataset, collate_mp, to_cuda
 from torch.utils.data import DataLoader
 from functools import partial
+from huggingface_hub import hf_hub_download
+
+from ..modules import SimCLSScorer
+from ..modules.simcls.data_utils import ReRankingDataset, collate_mp, to_cuda
 
 @register("simcls")
 class MetricSimCLS(MetricReferenceless):
@@ -36,10 +38,13 @@ class MetricSimCLS(MetricReferenceless):
     def __init__(self, cfg: MetricSimCLS.Config):
         super().__init__(cfg)
         self.tokenizer: RobertaTokenizer = RobertaTokenizer.from_pretrained(cfg.model_type)
-        self.scorer : ReRanker = ReRanker(self.cfg.model_type, self.tokenizer.pad_token_id)
+        self.scorer : SimCLSScorer = SimCLSScorer(self.cfg.model_type, self.tokenizer.pad_token_id)
         if cfg.simcls_path is not None:
-            self.scorer.load_state_dict(torch.load(self.cfg.simcls_path, map_location=self.cfg.device))
+            weight_file_path = hf_hub_download(repo_id=cfg.simcls_path, filename="scorer.bin")
+            self.scorer.load_state_dict(torch.load(weight_file_path, map_location=self.cfg.device))
             self.scorer.eval()
+        else:
+            raise ValueError("Please provide the huggingface path to the trained SimCLS model via 'simcls_path' in the config.")
 
     def _load_data(self, candidate_cnt: int, data_path: str):
         """
