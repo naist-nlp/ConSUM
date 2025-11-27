@@ -6,9 +6,9 @@ import pytest
 import torch
 
 from .moverscore import MetricMoverScore
-from moverscore_v2 import word_mover_score, get_idf_dict
 
 from ..utils.summ_test_set import HYPOTHESES, REFERENCES
+from ..modules.moverscore.MoverScorer import MoverScorer
 
 class TestMetricMoverScore:
     @pytest.fixture(scope="class")
@@ -17,23 +17,22 @@ class TestMetricMoverScore:
 
     @pytest.fixture(scope="class")
     def moverscore_score(self):
-        return word_mover_score
+        return MoverScorer(
+            batch_size=8,
+            device="cuda" if torch.cuda.is_available() else "cpu",
+            n_gram=1,
+            stop_words=[],
+            remove_subwords=True,
+        )
 
     def test_score(self, metric_moverscore: MetricMoverScore, moverscore_score):
         metric_scores, move_scores = [], []
         for hyp, ref in zip(HYPOTHESES, REFERENCES):
             metric_score = metric_moverscore.score(hyp, ref)
             metric_scores.append(metric_score)
-            move_score = moverscore_score(
-                refs=[ref], 
-                hyps=[hyp],
-                idf_dict_ref=get_idf_dict([ref]),
-                idf_dict_hyp=get_idf_dict([hyp]),
-                stop_words=[],
-                n_gram=1,
-                remove_subwords=True,
-                batch_size=1,
-                device="cuda" if torch.cuda.is_available() else "cpu",
+            move_score = moverscore_score.score(
+                [ref], 
+                [hyp],
             )[0]
             move_scores.append(float(move_score))
         
@@ -45,16 +44,9 @@ class TestMetricMoverScore:
     def test_scores(self, metric_moverscore: MetricMoverScore, moverscore_score):
         metric_scores = metric_moverscore.scores(HYPOTHESES, REFERENCES)
 
-        mover_scores = moverscore_score(
-            refs=REFERENCES,
-            hyps=HYPOTHESES,
-            idf_dict_ref=get_idf_dict(REFERENCES),
-            idf_dict_hyp=get_idf_dict(HYPOTHESES),
-            stop_words=[],
-            n_gram=1,
-            remove_subwords=True,
-            batch_size=2,
-            device="cuda" if torch.cuda.is_available() else "cpu",
+        mover_scores = moverscore_score.score(
+            REFERENCES,
+            HYPOTHESES,
         )
 
         torch.testing.assert_close(
@@ -70,16 +62,9 @@ class TestMetricMoverScore:
         hyps = ["galaxy", "", "is", "test", "apple"]
         refs = ["", "planet", "star", ".", "orange"]
         metric_scores = metric_moverscore.scores(hyps, refs)
-        mover_scores = moverscore_score(
-            refs=refs,
-            hyps=hyps,
-            idf_dict_ref=get_idf_dict(refs),
-            idf_dict_hyp=get_idf_dict(hyps),
-            stop_words=[],
-            n_gram=1,
-            remove_subwords=True,
-            batch_size=2,
-            device="cuda" if torch.cuda.is_available() else "cpu",
+        mover_scores = moverscore_score.score(
+            refs,
+            hyps,
         )
 
         avoid_idf = torch.tensor([1.0]*len(hyps), dtype=torch.double)
@@ -101,15 +86,8 @@ class TestMetricMoverScore:
         for hyp in HYPOTHESES:
             moverscore_scores.append(
                 torch.Tensor(
-                    moverscore_score(
-                        refs=REFERENCES, hyps=[hyp] * len(REFERENCES),
-                        idf_dict_ref=get_idf_dict(REFERENCES),
-                        idf_dict_hyp=get_idf_dict([hyp] * len(REFERENCES)),
-                        stop_words=[],
-                        n_gram=1,
-                        remove_subwords=True,
-                        batch_size=2,
-                        device="cuda" if torch.cuda.is_available() else "cpu",
+                    moverscore_score.score(
+                        REFERENCES, [hyp] * len(REFERENCES),
                     )
                 )
             )
@@ -130,15 +108,8 @@ class TestMetricMoverScore:
         for hyp in hyps:
             moverscore_scores.append(
                 torch.Tensor(
-                    moverscore_score(
-                        refs=refs, hyps=[hyp] * len(refs),
-                        idf_dict_ref=get_idf_dict(refs),
-                        idf_dict_hyp=get_idf_dict([hyp] * len(refs)),
-                        stop_words=[],
-                        n_gram=1,
-                        remove_subwords=True,
-                        batch_size=2,
-                        device="cuda" if torch.cuda.is_available() else "cpu",
+                    moverscore_score.score(
+                        refs, [hyp] * len(refs),
                     )
                 )
             )
