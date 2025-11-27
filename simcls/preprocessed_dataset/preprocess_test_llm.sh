@@ -1,0 +1,28 @@
+#!/bin/bash
+
+SUBSET=test
+SETTINGS=llm
+
+if [ "$SLURM_ARRAY_TASK_ID" -eq 1 ]; then
+    INPUT_FILE="experiment/${SUBSET}/${SETTINGS}/candidate/cnn_dm/llama-3/candidate_16.json"
+    OUTPUT_DIR="experiment/${SUBSET}/${SETTINGS}/candidate/cnn_dm/llama-3/preprocessed"
+    DATASET_NAME=cnn_dm
+elif [ "$SLURM_ARRAY_TASK_ID" -eq 2 ]; then
+    INPUT_FILE="experiment/${SUBSET}/${SETTINGS}/candidate/xsum/llama-3/candidate_16.json"
+    OUTPUT_DIR="experiment/${SUBSET}/${SETTINGS}/candidate/xsum/llama-3/preprocessed"
+    DATASET_NAME=xsum
+else
+    echo "Unknown SLURM_ARRAY_TASK_ID ${SLURM_ARRAY_TASK_ID}"  # Optional: Set a default log file path for other cases
+    exit 0
+fi
+
+echo "SLURM_ARRAY_JOB_ID" $SLURM_ARRAY_JOB_ID
+echo "SLURM_ARRAY_TASK_ID" $SLURM_ARRAY_TASK_ID
+echo "SLURM_ARRAY_TASK_COUNT" $SLURM_ARRAY_TASK_COUNT
+echo "SLURM_ARRAY_TASK_MAX" $SLURM_ARRAY_TASK_MAX
+echo "SLURM_ARRAY_TASK_MIN" $SLURM_ARRAY_TASK_MIN
+
+python libs/SimCLS/custom_data_preprocess.py \
+        --input_file $INPUT_FILE \
+        --output_dir $OUTPUT_DIR \
+        --dataset_name $DATASET_NAME
