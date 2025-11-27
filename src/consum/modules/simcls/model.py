@@ -1,4 +1,6 @@
 # modified from https://github.com/maszhongming/MatchSum
+# https://github.com/yixinL7/SimCLS/tree/main
+
 import torch
 from torch import nn
 from transformers import RobertaModel

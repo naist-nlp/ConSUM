@@ -1,3 +1,5 @@
+# https://github.com/AIPHES/emnlp19-moverscore
+
 from __future__ import absolute_import, division, print_function
 import numpy as np
 import torch

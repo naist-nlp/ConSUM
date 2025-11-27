@@ -1,3 +1,5 @@
+# https://github.com/plm3332/FIZZ
+
 from tqdm import tqdm
 from transformers import (
     AutoTokenizer,
