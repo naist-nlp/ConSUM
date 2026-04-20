@@ -6,7 +6,7 @@ from typing import Optional
 from torch import Tensor
 
 from mbrs import functional, timer
-from mbrs.metrics import Metric, MetricReferenceless, Metrics, get_metric
+from mbrs.metrics import Metric, MetricReferenceless, get_metric
 from mbrs.selectors import Selector, SELECTOR_NBEST
 from mbrs.decoders import register, DecoderMBR
 
@@ -21,17 +21,19 @@ class DecoderMixedRefMBR(DecoderMBR):
     def __init__(
         self, cfg: DecoderMixedRefMBR.Config, 
         metric_ref_based: Metric,
-        metric_referenceless: Optional[Metric | MetricReferenceless] = None,
         selector: Selector = SELECTOR_NBEST,
+        metric_referenceless: Optional[Metric | MetricReferenceless] = None,
     ) -> None:        
         super().__init__(cfg, metric_ref_based, selector=selector)
 
         self.metric_ref_based = self.metric
         
-        if metric_referenceless:
-            self.metric_referenceless = metric_referenceless
-        elif cfg.referenceless_metric:
-            self.metric_referenceless = get_metric(cfg.referenceless_metric)(cfg.referenceless_metric_config)
+        if cfg.referenceless_metric:
+            metric_class = get_metric(cfg.referenceless_metric)
+            metric_cfg = metric_class.Config(**(cfg.referenceless_metric_config or {}))
+            self.metric_referenceless = get_metric(cfg.referenceless_metric)(metric_cfg)
+        elif metric_referenceless:
+            self.metric_referenceless = metric_referenceless 
         else:
             raise ValueError("Referenceless metric must be provided.")
         
@@ -44,8 +46,8 @@ class DecoderMixedRefMBR(DecoderMBR):
         - epsilon (float): Small value to avoid division by zero in z-score normalization.
         """
 
-        referenceless_metric: Metrics
-        referenceless_metric_config: MetricReferenceless.Config | None = None
+        referenceless_metric: str
+        referenceless_metric_config: dict | None = None
         w_mbr: float = 0.5  # Weight for reference-based MBR
         w_referenceless: float = 1 - w_mbr  # Weight for referenceless MBR
         epsilon: float = 1e-8  # Small value to avoid division by zero

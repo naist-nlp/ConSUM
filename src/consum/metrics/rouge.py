@@ -48,7 +48,7 @@ class MetricROUGE(Metric):
         return Tensor(scores)
     
     def scores(
-        self, hypotheses: list[str], references: list[str]
+        self, hypotheses: list[str], references: list[str], *_, **__
     ) -> dict:
         scores = {}
         for hyp, ref in zip(hypotheses, references):
@@ -60,7 +60,7 @@ class MetricROUGE(Metric):
         return scores
 
     def score(
-        self, hypothesis: str, reference: str
+        self, hypothesis: str, reference: str, *_, **__
     ) -> dict:
         score = self.scorer.score(
             reference, hypothesis

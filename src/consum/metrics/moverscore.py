@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 
 import torch
 from dataclasses import dataclass, field
@@ -43,7 +44,7 @@ class MetricMoverScore(Metric):
         )
 
     def scores(
-        self, hypotheses: list[str], references: list[str]
+        self, hypotheses: list[str], references: list[str], *_, **__
     ) -> list[float]:
         score = self.scorer.score(
             references, 
@@ -52,7 +53,7 @@ class MetricMoverScore(Metric):
         return score
     
     def score(
-        self, hypothesis: str, reference: str
+        self, hypothesis: str, reference: str, *_, **__
     ) -> float:
         score = self.scorer.score(
             [reference], 

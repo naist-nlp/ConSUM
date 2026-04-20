@@ -57,7 +57,7 @@ class MetricUniEval(Metric):
 
     def scores(
         self, hypotheses: list[str], references: list[str], sources: list[str]
-    ) -> list[dict]:
+    ) -> dict:
         hypotheses = self.handle_missing_hypothesis(hypotheses)
         data = convert_to_json(
             output_list=hypotheses, 
@@ -65,7 +65,10 @@ class MetricUniEval(Metric):
             src_list=sources
         )
         scores = self.scorer.evaluate(data)
-        return scores
+        dict_scores = {}
+        for k in scores[0].keys():
+            dict_scores[k] = [score[k] for score in scores]
+        return dict_scores
     
     def score(
         self, hypothesis: str, reference: str, source: str

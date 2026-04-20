@@ -84,6 +84,11 @@ class MetricSimCLS(MetricReferenceless):
         return scores
 
     def score(
-        self, hypothesis: str, source: str
+        self, *_, **__
     ) -> dict:
+        raise NotImplementedError("Use the 'scores' method with a data path for batch scoring.")
+    
+    def corpus_score(
+        self, *_, **__
+    ) -> float:
         raise NotImplementedError("Use the 'scores' method with a data path for batch scoring.")

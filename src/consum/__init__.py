@@ -7,13 +7,16 @@ from .metrics import (
     MetricMENLI,
     MetricMoverScore,
     MetricROUGE,
+    MetricSimCLS,
+    MetricUniEval,
 )
 from .modules import (
+    FENICE,
     FizzScorer,
     MENLI,
-    UniEvalScorer,
-    FENICE,
+    MoverScorer,
     SimCLSScorer,
+    UniEvalScorer,
 )
 
 from .utils import *
